@@ -1,0 +1,19 @@
+﻿Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+f.Intrinsic.Control.If(v.Caller.Hook,=,15340)
+	V.Passed.000234.Set("Overtime Rule")
+	f.Intrinsic.Variable.SetProperty("000234","PW",100)
+	F.Intrinsic.Control.End
+f.Intrinsic.Control.Else
+	F.Intrinsic.Control.End
+f.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8369.28112$}$1
+${$6$}$rking$}$20230111151856848$}$QNdZLVy4bWuiWa9jh1ZTiKHvMPldSPXek3K/OH9GhSNdCDMDkIuoRNCSJCehhECRO69lUzebfeA=
+Program.Sub.Comments.End
