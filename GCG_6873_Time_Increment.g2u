@@ -1,0 +1,128 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.Form..Create(BaseForm)
+Gui.Form..Caption("Form")
+Gui.Form..Size(285,136)
+Gui.Form..MinX(0)
+Gui.Form..MinY(0)
+Gui.Form..Position(0,0)
+Gui.Form..AlwaysOnTop(False)
+Gui.Form..FontName("Tahoma")
+Gui.Form..FontSize(8.25)
+Gui.Form..ControlBox(True)
+Gui.Form..MaxButton(True)
+Gui.Form..MinButton(True)
+Gui.Form..MousePointer(0)
+Gui.Form..Moveable(True)
+Gui.Form..Sizeable(False)
+Gui.Form..ShowInTaskBar(True)
+Gui.Form..TitleBar(True)
+Gui.Form..Event(UnLoad,Form_UnLoad)
+Gui.Form.lblTimeInc.Create(Label,"Timesheet Increment in Mins",True,136,13,0,18,20,True,0,"Tahoma",8.25,,0,0)
+Gui.Form.lblTimeInc.BorderStyle(0)
+Gui.Form.txtTime.Create(TextBox,"",True,85,20,0,18,39,True,0,"Tahoma",8.25,,1)
+Gui.Form.txtTime.NumericOnly(2)
+Gui.Form.cmdSave.Create(Button)
+Gui.Form.cmdSave.Enabled(True)
+Gui.Form.cmdSave.Visible(True)
+Gui.Form.cmdSave.Zorder(0)
+Gui.Form.cmdSave.Size(75,23)
+Gui.Form.cmdSave.Position(24,74)
+Gui.Form.cmdSave.Caption("Save")
+Gui.Form.cmdSave.FontName("Tahoma")
+Gui.Form.cmdSave.FontSize(8.25)
+Gui.Form.cmdSave.Event(Click,cmdSave_Click)
+Gui.Form.lblSDate.Create(Label,"Start Date",True,50,13,0,175,20,True,0,"Tahoma",8.25,,0,0)
+Gui.Form.lblSDate.BorderStyle(0)
+Gui.Form.dtp1.Create(DatePicker)
+Gui.Form.dtp1.Enabled(True)
+Gui.Form.dtp1.Visible(True)
+Gui.Form.dtp1.Zorder(0)
+Gui.Form.dtp1.Size(100,20)
+Gui.Form.dtp1.Position(175,39)
+Gui.Form.dtp1.CheckBox(False)
+Gui.Form.dtp1.FontName("Tahoma")
+Gui.Form.dtp1.FontSize(8.25)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.iIncr.Declare(Long,0)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Sub_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sRet.Declare(String,"")
+
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+F.Global.Registry.ReadValue("SUPERVSR",V.Caller.CompanyCode,"TimeSheet_Inc",6873,1000,6,"",V.Local.sRet)
+
+F.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"")
+	V.Global.iIncr.Set(V.Local.sRet.Long)
+	Gui.Form.txtTime.Text(V.Global.iIncr)
+F.Intrinsic.Control.EndIf
+
+F.Global.Registry.ReadValue("SUPERVSR",V.Caller.CompanyCode,"TimeSheet_Inc",6873,1000,3,"",V.Local.sRet)
+
+F.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"")
+	Gui.Form.dtp1.Value(V.Local.sRet)
+F.Intrinsic.Control.EndIf
+
+Gui.Form..Show
+Gui.Form..AlwaysOnTop(True)
+Gui.Form..AlwaysOnTop(False)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Sub_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Time_Increment.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.cmdSave_Click.Start
+F.Intrinsic.Control.SetErrorHandler("Sub_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sDate.Declare(String,"")
+
+F.Intrinsic.Control.If(V.Screen.Form!txtTime.Text,<>,"")
+	V.Global.iIncr.Set(V.Screen.Form!txtTime.Text)
+F.Intrinsic.Control.Else
+	V.Global.iIncr.Set(0)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Format(V.Screen.Form!dtp1.Value,"MM/DD/YYYY",V.Local.sDate)
+
+'F.Global.Registry.AddValue(V.Caller.User,V.Caller.CompanyCode,"TimeSheet_Inc",6873,1000,False,"TimeSheet_Inc",False,0,-999.0,1/1/1980,12:00:00 AM,V.Global.iIncr)
+F.Global.Registry.AddValue("SUPERVSR",V.Caller.CompanyCode,"TimeSheet_Inc",6873,1000,False,"TimeSheet_Inc",False,0,-999.0,V.Local.sDate,12:00:00 AM,V.Global.iIncr)
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Sub_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Time_Increment.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.Form_UnLoad.Start
+F.Intrinsic.Control.Try
+
+	F.Intrinsic.Control.End
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.Form_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8249.18654$}$1
+${$6$}$rking$}$20220831134253436$}$QNdZLVy4bWuiWa9jh1ZTiKVzNnEzrvL4acW/GbEPrGhFZo6uVYKXtJXm2T6imlor8hP5Q0m1L6U=
+Program.Sub.Comments.End
