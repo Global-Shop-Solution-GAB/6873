@@ -1,0 +1,417 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.FormOverride..Create(BaseForm)
+Gui.FormOverride..Caption("Timesheet Update Override")
+Gui.FormOverride..Size(1024,720)
+Gui.FormOverride..MinX(0)
+Gui.FormOverride..MinY(0)
+Gui.FormOverride..Position(0,0)
+Gui.FormOverride..AlwaysOnTop(False)
+Gui.FormOverride..FontName("Tahoma")
+Gui.FormOverride..FontSize(8.25)
+Gui.FormOverride..ControlBox(True)
+Gui.FormOverride..MaxButton(True)
+Gui.FormOverride..MinButton(True)
+Gui.FormOverride..MousePointer(0)
+Gui.FormOverride..Moveable(True)
+Gui.FormOverride..Sizeable(True)
+Gui.FormOverride..ShowInTaskBar(True)
+Gui.FormOverride..TitleBar(True)
+Gui.FormOverride..Event(UnLoad,FormOverride_UnLoad)
+Gui.FormOverride.lbl1.Create(Label,"Select Week",True,59,13,0,22,10,True,0,"Tahoma",8.25,,0,0)
+Gui.FormOverride.lbl1.BorderStyle(0)
+Gui.FormOverride.dtpWeek.Create(DatePicker)
+Gui.FormOverride.dtpWeek.Enabled(True)
+Gui.FormOverride.dtpWeek.Visible(True)
+Gui.FormOverride.dtpWeek.Zorder(0)
+Gui.FormOverride.dtpWeek.Size(100,20)
+Gui.FormOverride.dtpWeek.Position(19,30)
+Gui.FormOverride.dtpWeek.CheckBox(False)
+Gui.FormOverride.dtpWeek.FontName("Tahoma")
+Gui.FormOverride.dtpWeek.FontSize(8.25)
+Gui.FormOverride.dtpWeek.Event(Change,dtpWeek_Change)
+Gui.FormOverride.cmdRefresh.Create(Button)
+Gui.FormOverride.cmdRefresh.Enabled(True)
+Gui.FormOverride.cmdRefresh.Visible(True)
+Gui.FormOverride.cmdRefresh.Zorder(0)
+Gui.FormOverride.cmdRefresh.Size(75,28)
+Gui.FormOverride.cmdRefresh.Position(301,25)
+Gui.FormOverride.cmdRefresh.Caption("REFRESH")
+Gui.FormOverride.cmdRefresh.FontName("Tahoma")
+Gui.FormOverride.cmdRefresh.FontSize(8.25)
+Gui.FormOverride.cmdRefresh.Event(Click,cmdRefresh_Click)
+Gui.FormOverride.GsGridSheet.Create(GsGridControl)
+Gui.FormOverride.GsGridSheet.Enabled(True)
+Gui.FormOverride.GsGridSheet.Visible(True)
+Gui.FormOverride.GsGridSheet.Zorder(0)
+Gui.FormOverride.GsGridSheet.Size(997,583)
+Gui.FormOverride.GsGridSheet.Position(21,62)
+Gui.FormOverride.GsGridSheet.Anchor(15)
+Gui.FormOverride.GsGridSheet.Event(RowCellClick,GsGridSheet_RowCellClick)
+Gui.FormOverride.cmdSave.Create(Button)
+Gui.FormOverride.cmdSave.Enabled(True)
+Gui.FormOverride.cmdSave.Visible(True)
+Gui.FormOverride.cmdSave.Zorder(0)
+Gui.FormOverride.cmdSave.Size(75,23)
+Gui.FormOverride.cmdSave.Position(22,655)
+Gui.FormOverride.cmdSave.Caption("Save")
+Gui.FormOverride.cmdSave.FontName("Tahoma")
+Gui.FormOverride.cmdSave.FontSize(8.25)
+Gui.FormOverride.cmdSave.Anchor(6)
+Gui.FormOverride.cmdSave.Event(Click,cmdSave_Click)
+Gui.FormOverride.lbl2.Create(Label,"Employee",True,46,13,0,127,10,True,0,"Tahoma",8.25,,0,0)
+Gui.FormOverride.lbl2.BorderStyle(0)
+Gui.FormOverride.txtEmp.Create(TextBox,"",True,135,20,0,126,30,True,0,"Tahoma",8.25,,1)
+Gui.FormOverride.txtEmp.Locked(True)
+Gui.FormOverride.cmdEmp.Create(Button)
+Gui.FormOverride.cmdEmp.Enabled(True)
+Gui.FormOverride.cmdEmp.Visible(True)
+Gui.FormOverride.cmdEmp.Zorder(0)
+Gui.FormOverride.cmdEmp.Size(34,23)
+Gui.FormOverride.cmdEmp.Position(264,28)
+Gui.FormOverride.cmdEmp.Caption("^")
+Gui.FormOverride.cmdEmp.FontName("Tahoma")
+Gui.FormOverride.cmdEmp.FontSize(8.25)
+Gui.FormOverride.cmdEmp.Event(Click,cmdEmp_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sUser.Declare(String)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.CallSub(Get_PayPeriods)
+
+Gui.FormOverride..Show
+Gui.FormOverride..AlwaysOnTop(True)
+Gui.FormOverride..AlwaysOnTop(False)
+
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.FormOverride_UnLoad.Start
+F.Intrinsic.Control.SetErrorHandler("FormOverride_UnLoad_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("FormOverride_UnLoad_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+Program.Sub.FormOverride_UnLoad.End
+
+Program.Sub.GsGridSheet_RowCellClick.Start
+F.Intrinsic.Control.SetErrorHandler("GsGridSheet_RowCellClick_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.If(V.Args.Column.UCase,=,"UPDATED")
+	F.Data.DataTable.SetValue("TimeSheet",V.Args.RowIndex,"Updated",V.DataTable.TimeSheet(V.Args.RowIndex).Updated!FieldValNot)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GsGridSheet_RowCellClick_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.GsGridSheet_RowCellClick.End
+
+Program.Sub.cmdSave_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdSave_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.dDate.Declare(Date)
+V.Local.i.Declare(Long,0)
+V.Local.sSql.Declare(String,"")
+
+Gui.FormOverride..Enabled(False)
+
+F.ODBC.Connection!Con.OpenCompanyConnection
+V.Local.dDate.Set(V.Screen.FormOverride!dtpWeek.Value)
+
+F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.TimeSheet.RowCount--,1)
+	F.Intrinsic.Control.If(V.DataTable.TimeSheet(V.Local.i).Updated!FieldVal,=,False)
+		F.Intrinsic.String.Build("Update GCG_6873_TIMSHT Set Updated = 0 Where Beg_Week = '{0}' and Job = '{1}' and Suffix = '{2}' and Seq = '{3}' and WC = '{4}'",V.Local.dDate.PervasiveDate,V.DataTable.TimeSheet(V.Local.i).Job!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).Suffix!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).Seq!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).WC!FieldValTrim,V.Local.sSql)
+		F.ODBC.Connection!Con.Execute(V.Local.sSql)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("Update GCG_6873_TIMSHT Set Updated = 1 Where Beg_Week = '{0}' and Job = '{1}' and Suffix = '{2}' and Seq = '{3}' and WC = '{4}'",V.Local.dDate.PervasiveDate,V.DataTable.TimeSheet(V.Local.i).Job!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).Suffix!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).Seq!FieldValTrim,V.DataTable.TimeSheet(V.Local.i).WC!FieldValTrim,V.Local.sSql)
+		F.ODBC.Connection!Con.Execute(V.Local.sSql)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Next(V.Local.i)
+F.ODBC.Connection!Con.Close
+
+F.Intrinsic.UI.Msgbox("Records Updated")
+
+Gui.FormOverride..Enabled(True)
+
+Gui.FormOverride.txtEmp.Text("")
+V.Global.sUser.Set("")
+
+F.Intrinsic.Control.CallSub(Get_Data)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdSave_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.cmdEmp_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdEmp_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sSql.Declare(String,"")
+V.Local.sRet.Declare(String,"")
+V.Local.sTitles.Declare(String,"")
+V.Local.sWidths.Declare(String,"")
+
+V.Local.sSql.Set("Select Employee,PR_USER_ID FROM V_EMPLOYEE_MSTR Where PR_User_ID <> ''")
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+
+V.Local.sTitles.Set("Employee*!*User ID")
+V.Local.sWidths.Set("1800*!*1800")
+
+F.Intrinsic.String.Split(V.Local.sTitles,"*!*",V.Local.sTitles)
+F.Intrinsic.String.Split(V.Local.sWidths,"*!*",V.Local.sWidths)
+	
+F.ODBC.Connection!Con.OpenCompanyConnection
+F.Intrinsic.UI.Browser("Select Employee","con",V.Local.sSql,V.Local.sTitles,V.Local.sWidths,10200,9000,V.Local.sRet)
+F.ODBC.Connection!Con.Close
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+	gui.FormOverride.txtEmp.Text(V.Local.sRet.Trim)
+	V.Global.sUser.Set(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.CallSub(cmdRefresh_Click)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdEmp_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdEmp_Click.End
+
+Program.Sub.cmdRefresh_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdRefresh_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.If(V.Global.sUser.Trim,=,"")
+	F.Intrinsic.UI.Msgbox("Select a Employee")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(Get_Data)
+
+Gui.FormOverride..AlwaysOnTop(True)
+Gui.FormOverride..AlwaysOnTop(False)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdRefresh_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdRefresh_Click.End
+
+Program.Sub.Get_Data.Start
+F.Intrinsic.Control.SetErrorHandler("Get_Data_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sSql.Declare(String,"")
+V.Local.dDate.Declare(Date)
+
+V.Local.dDate.Set(V.Screen.FormOverride!dtpWeek.Value)
+
+Gui.FormOverride.GsGridSheet.SuspendLayout
+
+F.Intrinsic.Control.If(V.DataTable.TimeSheet.Exists)
+	F.Data.DataTable.Close("TimeSheet")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("Select Beg_Week, User_ID, Job, Suffix, Seq, WC, Updated From GCG_6873_Timsht Where User_ID = '{0}' and Beg_Week = '{1}'",V.Global.sUser.Trim,V.Local.dDate.PervasiveDate,V.Local.sSql)
+F.ODBC.Connection!Con.OpenCompanyConnection
+F.Data.DataTable.CreateFromSQL("TimeSheet",Con,V.Local.sSql,True)
+F.ODBC.Connection!Con.Close
+
+F.Intrinsic.Control.CallSub(Set_Prop)
+
+Gui.FormOverride.GsGridSheet.ResumeLayout
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Get_Data_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Get_Data.End
+
+Program.Sub.Set_Prop.Start
+F.Intrinsic.Control.SetErrorHandler("Set_Prop_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+Gui.FormOverride.GsGridSheet.AddGridviewFromDatatable("GTimesheet","TimeSheet")
+
+Gui.FormOverride.GsGridSheet.SetGridviewProperty("GTimesheet",V.Enum.GridViewPropertyNames!Editable,False)
+Gui.FormOverride.GsGridSheet.SetGridviewProperty("GTimesheet",V.Enum.GridViewPropertyNames!ReadOnly,True)
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Beg_Week","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Beg_Week","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Beg_Week","caption","Beg Week")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Beg_Week","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Beg_Week","Fixed", "Left")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "Beg_Week", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","User_ID","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","User_ID","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","User_ID","caption","User ID")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","User_ID","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "User_ID", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","JOB","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","JOB","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","JOB","caption","Job")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","JOB","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "JOB", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Suffix","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Suffix","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Suffix","caption","Suffix")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Suffix","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "Suffix", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Seq","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Seq","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Seq","caption","Seq")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","Seq","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "Seq", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","WC","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","WC","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","WC","caption","Work Center")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","WC","HeaderWordWrap", "Wrap")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","WC","MinWidth", 50)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "WC", "HeaderWordWrap", "Wrap")
+
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","headerforecolor", v.Color.PRI-GSS-00)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","Caption", "Updated")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","headerfontbold", true)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","visible","True")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","MinWidth", 60)
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet","UPDATED","Fixed","Right")
+GUI.FormOverride.GsGridSheet.SetColumnProperty("GTimesheet", "UPDATED", "HeaderWordWrap", "Wrap")
+
+Gui.FormOverride.GsGridSheet.MainView("GTimesheet")
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Set_Prop_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Set_Prop.End
+
+Program.Sub.dtpWeek_Change.Start
+F.Intrinsic.Control.SetErrorHandler("dtpWeek_Change_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sFilter.Declare(String)
+V.Local.bRet.Declare(Boolean,False)
+V.Local.dDate.Declare(Date)
+V.Local.dStart.Declare(Date)
+V.Local.dEnd.Declare(Date)
+
+F.Intrinsic.String.Build("[Beg_Week] <= '#{0}#' and [End_Week] >= '#{0}#'",V.Screen.FormOverride!dtpWeek.Value,V.Local.sFilter)
+
+F.Intrinsic.Control.If(V.DataView.PayPeriods!Temp.Exists)
+	F.Data.DataView.Close("PayPeriods","Temp")
+F.Intrinsic.Control.EndIf
+
+F.Data.DataView.Create("PayPeriods","Temp",22,V.Local.sFilter,"")
+
+F.Intrinsic.Control.If(V.DataView.PayPeriods!Temp.RowCount--,<>,-1)
+	Gui.FormOverride.dtpWeek.Value(V.DataView.PayPeriods!Temp(V.DataView.PayPeriods!Temp.RowCount--).Beg_Week!FieldVal)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.If(V.DataView.PayPeriods!Temp.Exists)
+	F.Data.DataView.Close("PayPeriods","Temp")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("dtpWeek_Change_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.dtpWeek_Change.End
+
+Program.Sub.Get_PayPeriods.Start
+F.Intrinsic.Control.SetErrorHandler("Get_PayPeriods_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.ODBC.Connection!Con.OpenCompanyConnection
+
+F.Data.DataTable.CreateFromSQL("PayPeriods",Con,"Select Distinct Beg_Week, Beg_Week+13 as End_Week From GCG_6873_Timsht",True)
+
+F.ODBC.Connection!Con.Close
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Get_PayPeriods_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_6873_Update_Overrride.g2u {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(FormOverride_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Get_PayPeriods.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8523.27591$}$1
+${$6$}$rking$}$20230511081131916$}$QNdZLVy4bWuiWa9jh1ZTiKHvMPldSPXe264G8XMkKZh6VcLN3Lv028tJef2lCiBq+0L612RqjVU=
+Program.Sub.Comments.End
